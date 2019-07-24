@@ -13,7 +13,8 @@ class Node{
 Node* newnode(int key){
     Node* temp = new Node();
     temp->data = key;
-    return temp;
+    temp->next = NULL;
+    return temp; 
 }
 
 void push(Node** root, int key){
@@ -35,9 +36,13 @@ void push(Node** root, int key){
     		head->next = temp;
 		}
 		else{
-			while(head->data < key){
+			while(head->data < key and head->next != NULL) {
 				prev = head;
 				head = head->next;
+			}
+			if(head->next == NULL and head->data < key){
+				head->next = temp;
+				return;
 			}
 			temp->next = head;
 			prev->next = temp;
@@ -57,7 +62,7 @@ void getMedian(Node* root, int i){
     }
     else{
         Node* slow = root, *fast = root, *prev = NULL;
-        while(fast and fast->next){
+        while(fast!=NULL and fast->next!=NULL){
             prev = slow;
             slow = slow->next;
             fast = fast->next->next;
@@ -67,12 +72,20 @@ void getMedian(Node* root, int i){
     }
 }
 
+void print(Node* root){
+	while(root){
+		cout<<root->data<<" ";
+		root = root->next;
+	}
+}
+
 void findMedian(int arr[], int n){
     Node* root = NULL;
     for(int i = 0; i<n; i++){
         push(&root, arr[i]);
         getMedian(root, i);
     }
+    delete root;
 }
 
 int main() {
