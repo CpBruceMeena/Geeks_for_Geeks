@@ -3,12 +3,6 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-void fill(map<char, int> &mymap, set<char> temp){
-    for(auto itr= temp.begin(); itr!=temp.end(); itr++){
-        mymap[*itr]++;
-    }
-}
-
 int min(int a, int b){
     return(a>=b?b:a);
 }
@@ -16,24 +10,26 @@ int min(int a, int b){
 void solve(string s){
     set<char> temp;
     int n = s.size();
+    int text[256] = {0};
+    int pat[256] = {0}, final_ans = INT_MAX;
+    for(int i = 0; i<s.size(); i++) temp.insert(s[i]);
+    for(auto itr = temp.begin(); itr != temp.end(); itr++){
+        pat[*itr]++;
+    }    
+    int count = 0, start = 0;
+    int len = temp.size();
     for(int i = 0; i<n; i++){
-        temp.insert(s[i]);
-    }
-    int final_ans = INT_MAX;
-    for(int i = 0; i<= n-temp.size(); i++){
-        map<char, int> mymap;
-        fill(mymap, temp);
-        int t = temp.size();
-        int len = 0;
-        int j = i;
-        while(len != t and j <n){
-            if(mymap[s[j]] != 0 and len != t){
-                len++, mymap[s[j]]--;
+        text[s[i]]++;
+        if(pat[s[i]] != 0 and text[s[i]] <= pat[s[i]]) count++;
+        
+        if(count == len){
+            while(text[s[start]] > pat[s[start]] or pat[s[start]] == 0){
+                if(text[s[start]] > pat[s[start]])
+                    text[s[start]]--;
+                start++;
             }
-            j++;
-        }
-        if(len == t){
-            final_ans = min(final_ans, j - i);
+            int curr = i - start + 1;
+            final_ans = min(curr, final_ans);
         }
     }
     cout<<final_ans<<endl;
